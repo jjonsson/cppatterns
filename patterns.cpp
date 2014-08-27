@@ -2,9 +2,12 @@
 // Date: 8/26/14
 //
 // Compile with -std=c++1y (C++14)
+// Compiled successfully under Clang 3.4
+
 
 #include <iostream>
 #include <type_traits>
+
 
 // These macros will be used later to make this library usable.
 #define MATCH(P) undefined
@@ -14,6 +17,7 @@
 // Forward declare Pattern so that Helper can reference it.
 template<typename... Ts>
 class Pattern;
+
 
 // Helper is useful as it gives easy access to the first element (that is, T).
 //   Pattern cannot be formed the same way as it needs to be able to be empty.
@@ -83,7 +87,6 @@ public:
 };
 
 
-
 // Test classes.
 class Parent {
   virtual void f() {
@@ -104,12 +107,12 @@ class Other {
 };
 
 int main() {
-  
   // Some quick and dirty tests.
-  std::cout << Matcher<Pattern<Parent>, Pattern<Child> >::is_match_type::value << std::endl;
-  std::cout << Matcher<Pattern<Parent>, Pattern<Other> >::is_match_type::value << std::endl;
-  std::cout << Matcher<Pattern<Parent,Other>, Pattern<Child,Other> >::is_match_type::value << std::endl;
-  std::cout << Matcher<Pattern<Parent,Parent>, Pattern<Other> >::is_match_type::value << std::endl;
+  // All pattern matching is done at compile time, so these can be static_asserts.
+  static_assert(Matcher<Pattern<Parent>, Pattern<Child> >::is_match_type::value, "Fail!");
+  static_assert(!Matcher<Pattern<Parent>, Pattern<Other> >::is_match_type::value, "Fail!");
+  static_assert(Matcher<Pattern<Parent,Other>, Pattern<Child,Other> >::is_match_type::value, "Fail!");
+  static_assert(!Matcher<Pattern<Parent,Parent>, Pattern<Other> >::is_match_type::value, "Fail!");
   
   return 0;
 }
