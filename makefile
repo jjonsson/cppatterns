@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -g -std=c++1y
+CFLAGS = -g -std=c++11
 OBJECTS = build/patterns.o
 TARGET = patterns
 

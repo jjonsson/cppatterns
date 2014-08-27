@@ -1,7 +1,7 @@
 // Author: James Jonsson
 // Date: 8/26/14
 //
-// Compile with -std=c++1y (C++14)
+// Compile with -std=c++11 (or C++14)
 // Compiled successfully under Clang 3.4
 
 
@@ -115,6 +115,11 @@ int main() {
   static_assert(!Matcher<Pattern<Parent>, Pattern<Other> >::is_match_type::value, "Fail!");
   static_assert(Matcher<Pattern<Parent,Other>, Pattern<Child,Other> >::is_match_type::value, "Fail!");
   static_assert(!Matcher<Pattern<Parent,Parent>, Pattern<Other> >::is_match_type::value, "Fail!");
+  
+  std::cout << Matcher<Pattern<Parent>, Pattern<Child> >::is_match_type::value << std::endl;
+  std::cout << Matcher<Pattern<Parent>, Pattern<Other> >::is_match_type::value << std::endl;
+  std::cout << Matcher<Pattern<Parent,Other>, Pattern<Child,Other> >::is_match_type::value << std::endl;
+  std::cout << Matcher<Pattern<Parent,Parent>, Pattern<Other> >::is_match_type::value << std::endl;
   
   return 0;
 }
