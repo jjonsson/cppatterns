@@ -1,14 +1,17 @@
 #include <iostream>
 #include <type_traits>
 
+// These macros will be used later to make this library usable.
 #define MATCH(P) undefined
-
 #define CASE(T) undefined
 
 
+// Forward declare Pattern so that Helper can reference it.
 template<typename... Ts>
 class Pattern;
 
+// Helper is useful as it gives easy access to the first element.
+//   Pattern cannot be formed the same way as it needs to be able to be empty.
 template<typename U, typename... Us>
 class Helper {
 public:
@@ -16,6 +19,8 @@ public:
   typedef Pattern<Us...> rest_type;
 };
 
+
+// The empty Pattern.
 template<>
 class Pattern<> {
 public:
@@ -24,42 +29,36 @@ public:
   typedef void rest_type;
 };
 
+// Pattern uses Helper to provide access to the first element and the tail elements.
 template<typename... Ts>
 class Pattern {
   
 public:
   constexpr static std::size_t size() { return sizeof... (Ts); }
-  typedef
-    typename std::conditional<(sizeof... (Ts)) == 0, std::true_type, std::false_type>::type
-    is_empty_type;
-  typedef
-    typename std::conditional<
-      is_empty_type::value,
-      void,
-      typename Helper<Ts...>::first_type
-    >::type
-    first_type;
-  typedef
-    typename std::conditional<
-      is_empty_type::value,
-      void,
-      typename std::enable_if<(size() > 0), typename Helper<Ts...>::rest_type
-    >::type>::type
-    rest_type;
+  
+  // We know that this Pattern is not empty because an empty Pattern
+  //   would have instantiated the previous definition.
+  typedef typename std::false_type is_empty_type;
+  
+  typedef typename Helper<Ts...>::first_type first_type;
+      
+  typedef typename Helper<Ts...>::rest_type rest_type;
 };
 
-// T and U should both be Pattern types.
+// T and U must both be Pattern types.
 template<typename T, typename U>
 class Matcher {
 public:
   typedef typename
-  std::conditional<(T::size() != U::size()), std::false_type, 
-    typename std::conditional<(T::size() == 0), std::true_type, 
-      typename std::conditional<(std::is_base_of<typename T::first_type, typename U::first_type>::value),
-        typename Matcher<typename T::rest_type, typename U::rest_type>::is_match_type,
-        std::false_type>::type>::type>::type is_match_type;
+    std::conditional<(std::is_base_of<typename T::first_type, typename U::first_type>::value),
+      typename Matcher<typename T::rest_type, typename U::rest_type>::is_match_type,
+      std::false_type>::type
+    is_match_type;
 };
 
+// The less specialized version of Matcher must not be instantiated,
+//   as it will attempt to call "first" and "rest" on empty Patterns.
+//   Hence, these more spectialized versions correctly handle empty Patterns.
 template<>
 class Matcher<Pattern<>, Pattern<> > {
 public:
@@ -80,7 +79,7 @@ public:
 
 
 
-
+// Test classes.
 class Parent {
   virtual void f() {
     std::cout << "spam" << std::endl;
@@ -100,12 +99,8 @@ class Other {
 };
 
 int main() {
-  // Parent* x = new Parent();
-  // MATCH(x) {
-  //   CASE(Child) std::cout << "child" << std::endl;
-  //   CASE(Other) std::cout << "other" << std::endl;
-  //   std::cout << "default" << endl;
-  // }
+  
+  // Some quick and dirty tests.
   std::cout << Matcher<Pattern<Parent>, Pattern<Child> >::is_match_type::value << std::endl;
   std::cout << Matcher<Pattern<Parent>, Pattern<Other> >::is_match_type::value << std::endl;
   std::cout << Matcher<Pattern<Parent,Other>, Pattern<Child,Other> >::is_match_type::value << std::endl;
