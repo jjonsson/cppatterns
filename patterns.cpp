@@ -68,7 +68,7 @@ public:
 
 // The less specialized version of Matcher must not be instantiated,
 //   as it will attempt to call "first" and "rest" on empty Patterns.
-//   Hence, these more spectialized versions correctly handle empty Patterns.
+//   Hence, these more specialized versions correctly handle empty Patterns.
 template<>
 class Matcher<Pattern<>, Pattern<> > {
 public:
