@@ -56,6 +56,7 @@ public:
 template<typename T, typename U>
 class Matcher {
 public:
+  
   // Check to make sure that every item of the input is a subclass of the corresponding
   //   class in the pattern.
   typedef typename
@@ -107,6 +108,7 @@ class Other {
 };
 
 int main() {
+  
   // Some quick and dirty tests.
   // All pattern matching is done at compile time, so these can be static_asserts.
   static_assert(Matcher<Pattern<Parent>, Pattern<Child> >::is_match_type::value, "Fail!");
