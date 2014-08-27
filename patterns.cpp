@@ -1,3 +1,8 @@
+// Author: James Jonsson
+// Date: 8/26/14
+//
+// Compile with -std=c++1y (C++14)
+
 #include <iostream>
 #include <type_traits>
 
@@ -10,13 +15,13 @@
 template<typename... Ts>
 class Pattern;
 
-// Helper is useful as it gives easy access to the first element.
+// Helper is useful as it gives easy access to the first element (that is, T).
 //   Pattern cannot be formed the same way as it needs to be able to be empty.
-template<typename U, typename... Us>
+template<typename T, typename... Ts>
 class Helper {
 public:
-  typedef U first_type;
-  typedef Pattern<Us...> rest_type;
+  typedef T first_type;
+  typedef Pattern<Ts...> rest_type;
 };
 
 
@@ -37,11 +42,9 @@ public:
   constexpr static std::size_t size() { return sizeof... (Ts); }
   
   // We know that this Pattern is not empty because an empty Pattern
-  //   would have instantiated the previous definition.
+  //   would have instantiated the previous definition (Pattern<>).
   typedef typename std::false_type is_empty_type;
-  
   typedef typename Helper<Ts...>::first_type first_type;
-      
   typedef typename Helper<Ts...>::rest_type rest_type;
 };
 
@@ -49,6 +52,8 @@ public:
 template<typename T, typename U>
 class Matcher {
 public:
+  // Check to make sure that every item of the input is a subclass of the corresponding
+  //   class in the pattern.
   typedef typename
     std::conditional<(std::is_base_of<typename T::first_type, typename U::first_type>::value),
       typename Matcher<typename T::rest_type, typename U::rest_type>::is_match_type,
