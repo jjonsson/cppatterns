@@ -7,11 +7,36 @@
 
 #include <iostream>
 #include <type_traits>
+#include "pattern_matching.h"
 
 
-// These macros will be used later to make this library usable.
-#define MATCH(P) undefined
-#define CASE(T) undefined
+// // Starts an if statement so that each case can be an if else.
+// #define MATCH(X) auto _match_value = (X); if (false) {}
+//
+// // Calls case_helper to assign the match value to Y iff Y is an lvalue.
+// #define CASE(Y) else if (case_helper(_match_value, (Y)))
+// #define ENDMATCH else {}
+//
+// // We use function overloading so that the compiler will differentiate between
+// //   lvalues and rvalues for us.
+// template <typename T, typename U>
+// bool case_helper(const T& match_value, U&& case_value) {
+//   return match_value == case_value;
+// }
+//
+// // We can't assign to a const case value, of course.
+// template <typename T, typename U>
+// bool case_helper(const T& match_value, const U& case_value) {
+//   return match_value == case_value;
+// }
+//
+// // If the case value is an lvalue, we can assign to it.
+// template <typename T, typename U>
+// bool case_helper(const T& match_value, U& case_value) {
+//   T* pointer = &case_value;
+//   *pointer = match_value;
+//   return true;
+// }
 
 
 // Forward declare Pattern so that Helper can reference it.
@@ -57,8 +82,8 @@ template<typename T, typename U>
 class Matcher {
 public:
   
-  // Check to make sure that every item of the input is a subclass of the corresponding
-  //   class in the pattern.
+  // Check to make sure that every item of the input ,U, is a subclass of the corresponding
+  //   class in the pattern, T.
   typedef typename
     std::conditional<(std::is_base_of<typename T::first_type, typename U::first_type>::value),
       typename Matcher<typename T::rest_type, typename U::rest_type>::is_match_type,
@@ -110,16 +135,35 @@ class Other {
 int main() {
   
   // Some quick and dirty tests.
-  // All pattern matching is done at compile time, so these can be static_asserts.
   static_assert(Matcher<Pattern<Parent>, Pattern<Child> >::is_match_type::value, "Fail!");
   static_assert(!Matcher<Pattern<Parent>, Pattern<Other> >::is_match_type::value, "Fail!");
   static_assert(Matcher<Pattern<Parent,Other>, Pattern<Child,Other> >::is_match_type::value, "Fail!");
   static_assert(!Matcher<Pattern<Parent,Parent>, Pattern<Other> >::is_match_type::value, "Fail!");
   
-  std::cout << Matcher<Pattern<Parent>, Pattern<Child> >::is_match_type::value << std::endl;
-  std::cout << Matcher<Pattern<Parent>, Pattern<Other> >::is_match_type::value << std::endl;
-  std::cout << Matcher<Pattern<Parent,Other>, Pattern<Child,Other> >::is_match_type::value << std::endl;
-  std::cout << Matcher<Pattern<Parent,Parent>, Pattern<Other> >::is_match_type::value << std::endl;
+  
+  int x, y, z = 1;
+  while (z) { 
+  std::cout << "Enter a number. Enter 0 to proceed." << std::endl;
+  std::cin >> x;
+  MATCH(x)
+    CASE(0) z = 0;
+    CASE(y) std::cout << "y now equals " << y << std::endl;
+  ENDMATCH
+  }
+  
+  z = 1;
+  std::string s, t;
+  while (z) { 
+  std::cout << "Enter a string. Enter 'end' to quit." << std::endl;
+  std::cin >> s;
+  MATCH(s)
+    CASE("end") z = 0;
+    CASE(t) std::cout << "t now equals " << t << std::endl;
+  ENDMATCH
+  }  
+  
+  
+  std::cout << "test complete." << std::endl;
   
   return 0;
 }

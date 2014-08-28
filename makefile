@@ -8,7 +8,7 @@ all: build
 build: $(OBJECTS)
 	$(CC) -o $(TARGET) $(OBJECTS)
 
-build/patterns.o: patterns.cpp
+build/patterns.o: patterns.cpp pattern_matching.h
 	mkdir -p build
 	$(CC) $(CFLAGS) -o build/patterns.o -c patterns.cpp
 
