@@ -57,8 +57,8 @@ template<typename T, typename U>
 class Matcher {
 public:
   
-  // Check to make sure that every item of the input is a subclass of the corresponding
-  //   class in the pattern.
+  // Check to make sure that every item of the input ,U, is a subclass of the corresponding
+  //   class in the pattern, T.
   typedef typename
     std::conditional<(std::is_base_of<typename T::first_type, typename U::first_type>::value),
       typename Matcher<typename T::rest_type, typename U::rest_type>::is_match_type,
