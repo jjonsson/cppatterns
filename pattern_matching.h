@@ -31,8 +31,7 @@ namespace cpm {
   // If the case value is an lvalue, we can assign to it.
   template <typename T, typename U>
   bool case_helper(const T& match_value, U& case_value) {
-    T* pointer = &case_value;
-    *pointer = match_value;
+    case_value = match_value;
     return true;
   }
 }
