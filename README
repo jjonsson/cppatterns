@@ -1,0 +1,39 @@
+cppatterns
+==========
+
+Pattern matching in C++14
+
+
+To use this library, include "pattern_matching.h". To perform pattern matching,
+use the MATCH, CASE, and ENDMATCH macros as follows:
+
+MATCH takes one argument that must be an expression. This argument is the value
+  that each pattern will be checked against for a match. The MATCH macro is
+  used to begin pattern matching and must be followed by some number of CASE
+  macros and finally one ENDMATCH macro.
+  
+CASE takes one argument that is the pattern to be matched. If it contains a
+  variable, that variable will be assigned the appropriate value from the
+  original match expression. Each case may be followed by one statement or a
+  series of statements inside a block.
+  
+ENDMATCH takes no arguments and is must only be used once after every CASE in 
+  the MATCH statement.
+  
+  
+  
+Example:
+
+#include <iostream>
+using namespace std;
+
+int x, y, z;
+cin >> x;
+MATCH(x)
+  CASE(0) cout << "the input is zero";
+  CASE(1) {                              // multiple statements must be
+    cout << "the input is one";          //   within a block
+    y = 42;
+  }
+  CASE(z) cout << "the input is " << z;  // the input will be assigned to z
+ENDMATCH

@@ -142,17 +142,21 @@ int main() {
   
   
   int x, y, z = 1;
+  std::string s, t;
   while (z) { 
   std::cout << "Enter a number. Enter 0 to proceed." << std::endl;
   std::cin >> x;
   MATCH(x)
     CASE(0) z = 0;
+    CASE(1) {
+      std::cout << "You entered 1. That's close to 0, but not close enough.";
+      std::cout << std::endl;
+    }
     CASE(y) std::cout << "y now equals " << y << std::endl;
   ENDMATCH
   }
   
   z = 1;
-  std::string s, t;
   while (z) { 
   std::cout << "Enter a string. Enter 'end' to quit." << std::endl;
   std::cin >> s;
