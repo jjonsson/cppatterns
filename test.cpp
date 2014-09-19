@@ -50,7 +50,7 @@ list<function<bool()> > tests =
     MATCH('j')
       CASE('a') return false;
       CASE(c) return c == 'j';
-      CASE('j') return false;  // it shouldn't pass the second case.
+      CASE('j') return false;  // this case should not be reached
     ENDMATCH
     return false;
   }
