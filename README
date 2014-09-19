@@ -37,3 +37,7 @@ MATCH(x)
   }
   CASE(z) cout << "the input is " << z;  // the input will be assigned to z
 ENDMATCH
+
+
+
+Run make to run automated tests.

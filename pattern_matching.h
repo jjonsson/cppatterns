@@ -1,6 +1,6 @@
 // Author: James Jonsson
 // Date: 9/18/14
-
+// Use -std=c++11 (or C++14)
 
 #ifndef JPJ_CPM_PATTERN_MATCHING_H
 #define JPJ_CPM_PATTERN_MATCHING_H

@@ -1,16 +1,20 @@
 CC = g++
-CFLAGS = -g -std=c++11
-OBJECTS = build/patterns.o
-TARGET = patterns
+CFLAGS = -g -std=c++1y
+OBJECTS = build/test.o
+TARGET = test
 
 
-all: build
+all: build run_tests
 build: $(OBJECTS)
 	$(CC) -o $(TARGET) $(OBJECTS)
 
-build/patterns.o: patterns.cpp pattern_matching.h
+build/test.o: test.cpp pattern_matching.h
 	mkdir -p build
-	$(CC) $(CFLAGS) -o build/patterns.o -c patterns.cpp
+	$(CC) $(CFLAGS) -o build/test.o -c test.cpp
+
+run_tests:
+	./test
 
 clean:        
 	rm -rf $(TARGET) build/
+	
