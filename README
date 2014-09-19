@@ -40,4 +40,4 @@ ENDMATCH
 
 
 
-Run make to run automated tests.
+Run make to run automated tests (or run make run_tests if the tests are already built).
