@@ -2,7 +2,7 @@
 // Date: 9/18/14
 //
 // This file contains automated tests for pattern_matching.h
-// Compiled successfully under Clang 3.4
+// Compiled successfully under Clang 3.4 with -std=c++1y
 
 #include <string>
 #include <iostream>
@@ -10,6 +10,7 @@
 #include <functional>
 #include <type_traits>
 #include "pattern_matching.h"
+#include "tuple.h"
 
 using namespace std;
 
@@ -51,6 +52,17 @@ list<function<bool()> > tests =
       CASE('a') return false;
       CASE(c) return c == 'j';
       CASE('j') return false;  // this case should not be reached
+    ENDMATCH
+    return false;
+  },
+  []{  // Test 5: tuples
+    int x = 12;
+    int y = 7;
+    MATCH(cpm::tuple(42, 13, 'j'))
+      CASE(cpm::tuple(42,  x, 'c')) return false;
+      CASE(cpm::tuple(y, 11, 'j')) return false;
+      CASE(cpm::tuple(x, y, 'j')) return (x == 42) && (y == 7);
+      CASE(cpm::tuple(42, 13, 'j')) return false;  // should not be reached
     ENDMATCH
     return false;
   }
