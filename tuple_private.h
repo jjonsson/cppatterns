@@ -26,12 +26,12 @@ namespace cpm
   {
   public:
     // Every empty tuple is equal to every other empty tuple.
-    bool match(const Tuple<>& pattern) {
+    bool match(const Tuple<> pattern) {
       return true;
     }
     
     // Nothing to be done.
-    void assign(Tuple<>& pattern) {}
+    void assign(Tuple<> pattern) {}
   };
   
   template <typename... Ts>
@@ -42,16 +42,21 @@ namespace cpm
       // Nothing else to do
     }
     
+    // Accessor method.
+    Item<Ts...>& first() {
+      return first_;
+    }
+    
     // Check if this matches the pattern.
     template <typename... Us>
-    bool match(Tuple<Us...> pattern) {
-      return first_.template match<Us...>(pattern.first_);
+    bool match(Tuple<Us...> scrutinee) {
+      return first().template match<Us...>(scrutinee.first());
     }
     
     // Assign values from this to variables in other.
     template <typename... Us>
-    void assign(Tuple<Us...> pattern) {
-      pattern.first_.template assign<Us...>(first_);
+    void assign(Tuple<Us...> scrutinee) {
+      first().template assign<Us...>(scrutinee.first());
     }
     
   private:
@@ -73,15 +78,22 @@ namespace cpm
       // Nothing else to do
     }
     
+    // Accessor method
+    T data() {
+      return data_;
+    }
+    
     template <typename U>
     bool match(RLReference<U> other) {
-      return data_ == other.data_;
+      return data() == other.data();
     }
     
     template <typename U>
     void assign(RLReference<U> other) {
       // Nothing to do here
-    }  
+    }
+    
+
   };  
 
   template <typename T>
@@ -93,6 +105,11 @@ namespace cpm
     explicit RLReference(T data) : data_(data) {
       // Nothing else to do
     }
+
+    // Accessor method
+    T data() {
+      return data_;
+    }
     
     template <typename U>
     bool match(RLReference<U> other) {
@@ -101,7 +118,7 @@ namespace cpm
     
     template <typename U>
     void assign(RLReference<U> other) {
-      data_ = other.data_;
+      data() = other.data();
     }  
   };
   
@@ -112,20 +129,28 @@ namespace cpm
     Item(T data, Ts... rest) : data_(data), rest_(rest...) {
       // Nothing else to do
     }
+    
+    // Accessor methods
+    RLReference<T>& data() {
+      return data_;
+    }
+    Item<Ts...>& rest() {
+      return rest_;
+    }
 
     template <typename U, typename... Us>
     bool match(Item<U, Us...> other) {
-      bool result = data_.match(other.data_);
+      bool result = data().match(other.data());
       if (result) {  // If this item is not a match, no need to check the rest.
-        result = rest_.template match<Us...>(other.rest_);
+        result = rest().template match<Us...>(other.rest());
       }
       return result;
     }
     
     template <typename U, typename... Us>
     void assign(Item<U, Us...> other) {
-      data_.assign(other.data_);
-      rest_.template assign<Us...>(other.rest_);
+      data().assign(other.data());
+      rest().template assign<Us...>(other.rest());
     }
     
   private:
@@ -145,17 +170,20 @@ namespace cpm
       // Nothing else to do
     }
     
-    ~Item() {}
+    // Accessor method
+    RLReference<T>& data() {
+      return data_;
+    }
     
     // A variable counts as a match
     template <typename U>
     bool match(Item<U> other) {
-      return data_.match(other.data_);
+      return data().match(other.data());
     }
     
     template <typename U>
     void assign(Item<U> other) {
-      data_.assign(other.data_);
+      data().assign(other.data());
     }
     
   private:
@@ -164,8 +192,8 @@ namespace cpm
   
 
   template <typename... Ts>
-  Tuple<Ts&&...> tuple(Ts&&... args) {
-    return Tuple<Ts&&...>(args...);
+  Tuple<Ts...> tpl(Ts... args) {
+    return Tuple<Ts...>(args...);
   }
 
 }

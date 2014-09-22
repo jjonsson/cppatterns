@@ -1,5 +1,5 @@
-CC = g++
-CFLAGS = -g -std=c++1y
+CC = c++
+CFLAGS = -g -std=c++1y -pedantic
 OBJECTS = build/test.o
 TARGET = test
 

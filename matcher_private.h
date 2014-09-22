@@ -11,9 +11,9 @@ namespace cpm {
   // Match tuples and assign variables within the tuple.
   template <typename... Ts, typename... Us>
   bool Matcher::match(Tuple<Ts...> scrutinee, Tuple<Us...> pattern) {
-    bool result = scrutinee.match(pattern);
+    bool result = pattern.match(scrutinee);
     if (result) {
-      scrutinee.assign(pattern);
+      pattern.assign(scrutinee);
     }
     return result;
   }

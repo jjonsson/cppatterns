@@ -14,7 +14,7 @@ namespace cpm
   class Tuple;
   
   template <typename... Ts>
-  Tuple<Ts&&...> tuple(Ts&&...);
+  Tuple<Ts...> tpl(Ts...);
 }
 
 #include "tuple_private.h"

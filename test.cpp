@@ -13,9 +13,10 @@
 #include "tuple.h"
 
 using namespace std;
+using namespace cpm;
 
 // Keep the tests in a list for easy access and scaling.
-list<function<bool()> > tests =
+static list<function<bool()> > tests =
 {
   []{  // Test 1: integer matching
     MATCH(42)
@@ -58,11 +59,13 @@ list<function<bool()> > tests =
   []{  // Test 5: tuples
     int x = 12;
     int y = 7;
-    MATCH(cpm::tuple(42, 13, 'j'))
-      CASE(cpm::tuple(42,  x, 'c')) return false;
-      CASE(cpm::tuple(y, 11, 'j')) return false;
-      CASE(cpm::tuple(x, y, 'j')) return (x == 42) && (y == 7);
-      CASE(cpm::tuple(42, 13, 'j')) return false;  // should not be reached
+    MATCH(tpl(42, 13, 'j'))
+      // We need to force the compiler to use reference types, because it will
+      //   deduce value types.
+      CASE((tpl<int, int&, char>(42,  x, 'c'))) return false;
+      CASE((tpl<int&, int, char>(y, 11, 'j'))) return false;
+      CASE((tpl<int&, int&, char>(x, y, 'j'))) return (x == 42) && (y == 13);
+      CASE(tpl(42, 13, 'j')) return false;  // should not be reached
     ENDMATCH
     return false;
   }
