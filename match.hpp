@@ -11,17 +11,27 @@
 #include <initializer_list>
 #include "case.hpp"
 
-namespace cpm {  
-  // A list of cases in curly braces passed to a match function.
-  template<class T>
-  using case_list_t = std::initializer_list< Case< T > >;
+namespace cpm {
   
   // This function takes a single argument that it will treat as the scrutinee
-  //   in a pattern match. This function returns a function object that takes
-  //   an initializer list of Cases (each one containing a pattern) to match
-  //   against the scrutinee.
-  template<class T, class U>
-  std::function<void(case_list_t<U>)> match(const T& scrutinee);
+  //   in a pattern match. This function returns a Match object that can
+  //   perform pattern matching using the Match::with function.
+  template<class T>
+  Match<T> match(const T& scrutinee);
+  
+  // A Match object provides the with function that performs pattern matching.
+  template<class T>
+  class Match {
+  public:
+    template <class... Us>
+    void with(Case<Us>&...);
+  private:
+    explicit Match(const T&);
+    T scrutinee_;
+    
+    // Let's give match() access to the constructor.
+    friend Match<T> match(const T&);
+  };
 }
 
 #include "match_private.hpp"
